@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_product_2_inherit_form" model="ir.ui.view">
+                <field name="name">view.sale.inherit.form1</field>
+                <field name="model">product.template</field>
+                <field name="inherit_id" ref="product.product_template_form_view"/>
+                <field name="arch" type="xml">
+                    <xpath expr="//field[@name='company_id']" position="after">
+                        <field name="limit_sale"/>
+                        <field name="limit_sale_g"/>
+                    </xpath>
+                    
+                </field>
+        </record>
+        <record id="view_dev_rotation_inventory_form" model="ir.ui.view">
+            <field name="name">Stock Inventory</field>
+            <field name="model">jr.stock.inventory</field>
+            <field name="arch" type="xml">
+                <form string="Stock Inventory">
+                    <sheet>
+                        <group >
+                            <group string="Dates">
+                                <field name="start_date" required="1"/>
+                                <field name="end_date" required="1"/>
+                            </group>
+                            
+                        </group>
+                        <group string="Warehouse / Location">
+                            <group>
+                                <field name="bol_alm"/>
+                                <field name="warehouse_ids" widget="many2many_tags" attrs="{'required': [('bol_alm', '=', True)]}" />
+
+                            </group>
+                            
+                        </group>
+                        
+                        <footer>
+                            <button name="export_stock_ledger" string="Excel" type="object" class="btn-primary"/>
+                            or
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_rotation_stock_inventory_info" model="ir.actions.act_window">
+            <field name="name">Stock Rotation Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">jr.stock.inventory</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        
+        <menuitem action="action_rotation_stock_inventory_info" name="Stock Rotation Report"
+            id="menu_dev_rotation_inventory_stock" parent="stock.menu_warehouse_report"/>
+            
+        <record id="view_dev_rotation_inventory_excel" model="ir.ui.view">
+            <field name="name">Stock Rotation Report Excel</field>
+            <field name="model">jr.rotation.inventory.excel</field>
+            <field name="arch" type="xml">
+                <form string="Stock Ledger Excel">
+                    <group>
+                        <field name="excel_file" readonly="1" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                    </group>
+                    <footer>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_dev_rotation_inventory_excel" model="ir.actions.act_window">
+            <field name="name">Stock Rotation Report Excel</field>
+            <field name="res_model">jr.rotation.inventory.excel</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_dev_rotation_inventory_excel"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</openerp>
