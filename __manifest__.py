@@ -12,6 +12,7 @@
     'depends': ['sale_stock','base','stock'],
     'data': [
         'wizard/jr_rotation_inventory_views.xml',
+        'security/ir.model.access.csv',
         
     ],
   
