@@ -187,10 +187,14 @@ class dev_stock_inventory(models.TransientModel):
                                 c=2
                                 worksheet[work].write(r, c , line[0].display_name, text_right)
                                 c=c+1
-                                worksheet[work].write(r, c , line[0].limit_sale, text_right)
-                                c=c+1
-                                if line[0].limit_sale:
-                                    if product[1]<line[0].limit_sale:
+                                if line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id):
+                                    worksheet[work].write(r, c , line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id)[0].meta, text_right)
+                                    c=c+1
+                                else:
+                                    worksheet[work].write(r, c ,"sin definir",text_right)
+                                    c=c+1
+                                if line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id):
+                                    if product[1]<line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id)[0].meta:
                                         worksheet[work].write(r, c, product[1], text_right1)
                                         r+=1
                                     else:
@@ -204,8 +208,8 @@ class dev_stock_inventory(models.TransientModel):
                             
                                 c=4+month
 
-                                if line[0].limit_sale:
-                                    if product[1]<line[0].limit_sale:
+                                if line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id):
+                                    if product[1]<line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id)[0].meta:
                                         worksheet[work].write(r, c, product[1], text_right1)
                                         r+=1
                                     else:
@@ -396,13 +400,20 @@ class dev_stock_inventory_excel(models.TransientModel):
 class ProductProduct(models.Model):
     _inherit = "product.product"
 
-    limit_sale = fields.Float(related='product_tmpl_id.limit_sale')
+    meta_ids = fields.One2many(related='product_tmpl_id.meta_ids')
     limit_sale_g = fields.Float(related='product_tmpl_id.limit_sale_g')
     
 
 class ProductTemplate(models.Model):
     _inherit = "product.template"
     
-    limit_sale = fields.Float(string='Meta mensual')
+    
     limit_sale_g = fields.Float(string='Meta mensual Global')
+    meta_ids=fields.One2many("meta.warehouse","product_tmpl_id")
 
+class Stockmeta(models.Model):
+    _name="meta.warehouse"
+
+    warehouse_id=fields.Many2one('stock.warehouse',string='Warehouse')
+    meta=fields.Float(string="Meta")
+    product_tmpl_id=fields.Many2one("product.template")

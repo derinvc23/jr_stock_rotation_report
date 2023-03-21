@@ -7,8 +7,17 @@
                 <field name="inherit_id" ref="product.product_template_form_view"/>
                 <field name="arch" type="xml">
                     <xpath expr="//field[@name='company_id']" position="after">
-                        <field name="limit_sale"/>
                         <field name="limit_sale_g"/>
+                    </xpath>
+                    <xpath expr="//page[@name='notes']" position="after">
+                        <page string="Meta almacen">
+                            <field name="meta_ids">
+                                <tree editable="bottom">
+                                    <field name="warehouse_id"/>
+                                    <field name="meta"/>
+                                </tree>
+                            </field>
+                        </page>
                     </xpath>
                     
                 </field>
