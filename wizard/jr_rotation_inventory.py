@@ -109,7 +109,7 @@ class dev_stock_inventory(models.TransientModel):
                 for i in range(dif_month):
                     mes_ano.append(str((fields.Datetime.from_string(self.start_date) + relativedelta(months=i)).month)+"/"+str((fields.Datetime.from_string(self.start_date) + relativedelta(months=i)).year))
 
-                c = 4
+                c = 5
                 r= 8
                 for n in mes_ano:
                     worksheet[work].write(r, c, n, header_style)
@@ -163,11 +163,13 @@ class dev_stock_inventory(models.TransientModel):
 
 
                 c=2
-                worksheet[work].write(r, c, "Producto", header_style)
+                worksheet[work].write(r, c, "Codigo", header_style)
                 c=3
+                worksheet[work].write(r, c, "Producto", header_style)
+                c=4
                 worksheet[work].write(r, c, "Meta", header_style)
 
-                c = 4
+                c = 5
                 for tag in range(dif_month):
                     worksheet[work].write(r, c, "Ventas", header_style)
                     c+=1
@@ -185,7 +187,10 @@ class dev_stock_inventory(models.TransientModel):
                             if line.id==product[0].id and product[2]==month and month==0:
                             
                                 c=2
-                                worksheet[work].write(r, c , line[0].display_name, text_right)
+                                worksheet[work].write(r, c , line[0].default_code, text_right)
+                                c=c+1
+                                
+                                worksheet[work].write(r, c , line[0].name, text_right)
                                 c=c+1
                                 if line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id):
                                     worksheet[work].write(r, c , line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id)[0].meta, text_right)
@@ -206,7 +211,7 @@ class dev_stock_inventory(models.TransientModel):
 
                             elif line.id==product[0].id and product[2]==month and month!=0:
                             
-                                c=4+month
+                                c=5+month
 
                                 if line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id):
                                     if product[1]<line[0].meta_ids.filtered(lambda x:x.warehouse_id.lot_stock_id.id==warehouse_id.lot_stock_id.id)[0].meta:
@@ -263,7 +268,7 @@ class dev_stock_inventory(models.TransientModel):
             for i in range(dif_month):
                 mes_ano.append(str((fields.Datetime.from_string(self.start_date) + relativedelta(months=i)).month)+"/"+str((fields.Datetime.from_string(self.start_date) + relativedelta(months=i)).year))
 
-            c = 4
+            c = 6
             r= 8
             for n in mes_ano:
                 worksheet[work].write(r, c, n, header_style)
@@ -278,8 +283,8 @@ class dev_stock_inventory(models.TransientModel):
             data=[]
             for month in range(dif_month):
                 if fields.Datetime.from_string(self.start_date).month+month>12:
-                    month1=month-(12-int(fields.Datetime.from_string(self.start_date).month))
-                    year=fields.Datetime.from_string(self.start_date).year+1
+                        month1=month-(12-int(fields.Datetime.from_string(self.start_date).month))
+                        year=fields.Datetime.from_string(self.start_date).year+1
                 else:
                     month1=int(fields.Datetime.from_string(self.start_date).month)+month
                     year=fields.Datetime.from_string(self.start_date).year
@@ -316,12 +321,14 @@ class dev_stock_inventory(models.TransientModel):
                     unique_p_total.append(record3[0])
 
 
-            c=2
-            worksheet[work].write(r, c, "Producto", header_style)
             c=3
-            worksheet[work].write(r, c, "Meta", header_style)
+            worksheet[work].write(r, c, "Codigo", header_style)
+            c=4
+            worksheet[work].write(r, c, "Producto", header_style)
 
-            c = 4
+            c = 5
+            worksheet[work].write(r, c, "Meta", header_style)
+            c=6
             for tag in range(dif_month):
                 worksheet[work].write(r, c, "Ventas", header_style)
                 c+=1
@@ -338,8 +345,10 @@ class dev_stock_inventory(models.TransientModel):
 
                         if line.id==product[0].id and product[2]==month and month==0:
                         
-                            c=2
-                            worksheet[work].write(r, c , line[0].display_name, text_right)
+                            c=3
+                            worksheet[work].write(r, c , line[0].default_code, text_right)
+                            c=c+1
+                            worksheet[work].write(r, c , line[0].name, text_right)
                             c=c+1
                             worksheet[work].write(r, c , line[0].limit_sale_g, text_right)
                             c=c+1
@@ -356,7 +365,7 @@ class dev_stock_inventory(models.TransientModel):
 
                         elif line.id==product[0].id and product[2]==month and month!=0:
                         
-                            c=4+month
+                            c=6+month
 
                             if line[0].limit_sale_g:
                                 if product[1]<line[0].limit_sale_g:
